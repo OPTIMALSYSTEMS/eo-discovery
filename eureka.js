@@ -1,10 +1,10 @@
 /**
- * Wrapper around eureka-js-client that provides endpoints for the spring boot admin.
+ * Wrapper around eureka-js-client that provides endpoints for the spring boot admin / eureka.
  */
 const Eureka = require('eureka-js-client').Eureka;
 const ip = require('ip');
-const request = require('./request-promise');
-const expressIntegration = require('./eureka-express');
+const request = require('./lib/request-promise');
+const expressIntegration = require('./lib/eureka-express');
 const os = require('os');
 
 // This is used as default logger

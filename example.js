@@ -1,4 +1,4 @@
-const eureka = require('./lib/eureka.js');
+const eureka = require('./eureka.js');
 const express = require('express')
 const app = express()
 
