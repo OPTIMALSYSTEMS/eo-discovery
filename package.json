@@ -1,0 +1,23 @@
+{
+  "name": "enaio-discovery",
+  "version": "1.0.0",
+  "description": "Enaio node.js eureka discovery integration",
+  "main": "eureka.js",
+  "keywords": [
+    "eureka",
+    "enaio",
+    "discovery",
+    "microservice"
+  ],
+  "dependencies": {
+    "eureka-js-client": "^4.3.0",
+    "express": "^4.13.3",
+    "ip": "^1.1.5",
+    "range-parser": "^1.2.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "optimal systems",
+  "license": "MIT"
+}
