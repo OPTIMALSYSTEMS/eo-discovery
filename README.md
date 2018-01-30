@@ -8,13 +8,14 @@ You need at least node version 8. You can install it from [here](https://nodejs.
 In your project use
 
 ```
+npm add registry https://npm.enaio.org
 npm install enaio-discovery
 ```
 to add the enaio-discovery modules.
 
 ```javascript
 const express = require('express')
-const eureka = require('enaio-eureka')
+const discovery = require('enaio-discovery')
 
 // Create a express app
 const app = express()
@@ -22,7 +23,7 @@ const app = express()
 var listener = app.listen(3000, () => {
   // ... and register with the eureka discovery
   // Hint: If your eureka registry is not on localhost, you must provide a EUREKA_HOST environment variable.
-  eureka.init({
+  discovery.init({
       name : 'MyNodeService',           // We need a name for the service, so others can use it.
       express : app,                    // The express app is used to provide the discovery endpoints
       port : listener.address().port    // This is the public port for the registry, we just pass the express listener port
@@ -40,13 +41,14 @@ To get the base url for another service registered with the eureka discovery, us
 ```
 getAppUrl(ServiceName)
 ```
-to get a absolute url to the service with the given name.
+to get a absolute url to the service with the given name. A error is thrown, if the service is not known in the registry.
 
 
-To get the central configuration for this serive, use
+To get the central configuration for this serive, use this method on the discovery object.
 ```
 getConfig()
 ```
+The configuration returned depends on the profiles in use. 
 
 Environment variables
 ---------------------
