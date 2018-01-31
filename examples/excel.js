@@ -1,7 +1,7 @@
 /**
  * Example (micro) service that uses https://www.npmjs.com/package/xlsx to extract data from excel sheets.
  * This is for demonstation usage only. For production the propper error handling is missing.
- * You must 'npm install xlsx' before you can run this example by running 'node example/excel.js'.
+ * You must 'npm install --no-save xlsx' before you can run this example by running 'node example/excel.js'.
  *
  * If the service is registered in the registry, every one can call 'POST /ExcelReader' with a excel
  * file as body to retrieve a JSON with all data inside the excel worksheet.

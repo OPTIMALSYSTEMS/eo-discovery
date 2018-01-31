@@ -32,7 +32,7 @@ const exported = (eurekaClient, parameter) => {
   const getConfig = async () => {
 
     // Configuration endpoint is provided by the argus service
-    var url = getAppUrl('ARGUS') + '/config/' + parameter.name + '/'+ parameter.profiles;
+    var url = getAppUrl('ARGUS') + '/config/' + parameter.name + '/'+ parameter.profile;
 
     log.debug("Config url : "+url);
 
@@ -70,12 +70,11 @@ module.exports.init = async function(parameter) {
   log = parameter.logger || log;
 
   if( !parameter.express ) {
-    throw new Error('Express app not set.');
+    throw new Error('Express app not set as express parameter.');
   }
 
-
   if( !parameter.name ) {
-    throw new Error('name parameter not set.');
+    throw new Error('name parameter not set as parameter. You must provide a service name.');
   }
 
   // Determine the public host and port name
@@ -83,20 +82,23 @@ module.exports.init = async function(parameter) {
   var port = process.env.PUBLIC_PORT || parameter.port || parameter.express.address().port;
 
   if( !port ) {
-    throw new Error('port can not be determined. Use the environement variable for PUBLIC_PORT, the parameter or start the express listener first.');
+    throw new Error('port can not be determined. Use the environement variable for PUBLIC_PORT, the port parameter or start the express listener first.');
   }
 
-  if( !parameter.eureka ) parameter.eureka={};
+  var instanceId = parameter.name+':'+port;
+  parameter.profile = process.env.APP_PROFILE || parameter.profile || '';
 
+  parameter.eureka=parameter.eureka || {};
   var eureka = {
-    host : parameter.eureka.host || process.env.EUREKA_HOST || 'localhost',
-    port : parameter.eureka.port || process.env.EUREKA_PORT || 7261,
-    servicePath : parameter.eureka.servicePath || process.env.EUREKA_SERVICEPATH || '/eureka/apps'
+    host : process.env.EUREKA_HOST || parameter.eureka.host || 'localhost',
+    port : process.env.EUREKA_PORT || parameter.eureka.port || 7261,
+    servicePath : process.env.EUREKA_SERVICEPATH || parameter.eureka.servicePath || '/eureka/apps'
   }
 
   log.info('App name                : ' + parameter.name);
-  log.info('App profiles            : ' + parameter.profiles);
+  log.info('App profile             : ' + parameter.profile);
   log.info('App port                : ' + parameter.port);
+  log.info('App instance id         : ' + instanceId);
   log.info('App public host address : ' + hostname);
   log.info('App public port         : ' + port);
 
@@ -112,6 +114,7 @@ module.exports.init = async function(parameter) {
       ipAddr: ip.address('public'),   // Does this always work?
       statusPageUrl: 'http://'+hostname+':'+port+'/manage/info',
       healthCheckUrl: 'http://'+hostname+':'+port+'/manage/health',
+      instanceId : instanceId,
       port: {
         '$': port,
         '@enabled': 'true',
@@ -120,9 +123,6 @@ module.exports.init = async function(parameter) {
       dataCenterInfo: {
         '@class': 'com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo',
         name: 'MyOwn',  // This is needed by spring cloud / eureka / netflix whatever - if not set, a 400 is the response on registration
-      },
-      metadata : {
-        instanceId : parameter.name+':'+port
       }
     },
     // eureka server host / port and configuration
@@ -131,8 +131,7 @@ module.exports.init = async function(parameter) {
     logger : log
   });
 
-  expressIntegration.init(parameter,log);
-
+  // Wait for the eureka client start done
   await new Promise( (resolve,reject) => {
       eurekaClient.start( ()=>{
         log.info('Eureka client start done.');
@@ -140,5 +139,11 @@ module.exports.init = async function(parameter) {
       });
   });
 
-  return exported(eurekaClient, parameter);
+  // Created discovery object.
+  var discovery = exported(eurekaClient, parameter);
+
+  // Initialize the express integration
+  expressIntegration.init(parameter, log, discovery);
+
+  return discovery;
 }
