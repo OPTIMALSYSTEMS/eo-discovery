@@ -8,7 +8,6 @@ You need at least node version 8. You can install it from [here](https://nodejs.
 In your project use
 
 ```
-npm add registry https://npm.enaio.org
 npm install enaio-discovery
 ```
 to add the enaio-discovery modules.
@@ -48,7 +47,7 @@ To get the central configuration for this serive, use this method on the discove
 ```
 getConfig()
 ```
-The configuration returned depends on the profiles in use. 
+The configuration returned depends on the profiles in use.
 
 Environment variables
 ---------------------

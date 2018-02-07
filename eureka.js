@@ -15,6 +15,11 @@ var log = {
   error : (s) => {console.log('ERROR:  '+s)}
 }
 
+// Substitute config variables.
+// This replaces configs like 'http://${myserver}' with the actual value
+// Regular expression constructed with the help of https://regexr.com/
+const substitute = (input, args) => input.replace(/\${([a-z0-9.]+)}/gi, (_, v) => { return args[v] });
+
 const exported = (eurekaClient, parameter) => {
 
   const getAppUrl = function(id) {
@@ -39,15 +44,26 @@ const exported = (eurekaClient, parameter) => {
     var result = await request(url);
     const configRaw = JSON.parse( result );
     let config = {};
-    configRaw.propertySources.forEach( (propertySource) => {
-      if( propertySource.source ) {
-        for (var name in propertySource.source) {
-          if (propertySource.source.hasOwnProperty(name)) {
-            config[name] = propertySource.source[name];
+    if( configRaw.propertySources ) {
+      configRaw.propertySources.forEach( (propertySource) => {
+        if( propertySource.source ) {
+          for (var name in propertySource.source) {
+            if (propertySource.source.hasOwnProperty(name)) {
+              config[name] = propertySource.source[name];
+            }
           }
         }
+      });
+    }
+
+    for (var key in config) {
+      // skip loop if the property is from prototype
+      if (!config.hasOwnProperty(key)) continue;
+      if( typeof config[key] === "string" ) {
+        // If the config is a string we may have to do a substitute
+        config[key]=substitute(config[key],config);
       }
-    });
+    }
 
     log.debug("Config "+JSON.stringify(config,0,2));
 
