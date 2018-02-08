@@ -6,7 +6,7 @@
  * If the service is registered in the registry, every one can call 'POST /ExcelReader' with a excel
  * file as body to retrieve a JSON with all data inside the excel worksheet.
  */
-const eureka = require('../eureka.js');
+const eureka = require('../eureka.js'); // Change to require('enaio-discovery') if you copy this example
 const express = require('express')
 const bodyParser = require('body-parser')
 const xlsx = require('xlsx')

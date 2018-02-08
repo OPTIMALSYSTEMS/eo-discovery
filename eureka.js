@@ -98,10 +98,10 @@ module.exports.init = async function(parameter) {
   var port = process.env.PUBLIC_PORT || parameter.port || parameter.express.address().port;
 
   if( !port ) {
-    throw new Error('port can not be determined. Use the environement variable for PUBLIC_PORT, the port parameter or start the express listener first.');
+    throw new Error('port can not be determined. Use the environment variable for PUBLIC_PORT, the port parameter or start the express listener first.');
   }
 
-  var instanceId = parameter.name+':'+port;
+  var instanceId = hostname + ':' + parameter.name + ':'+port;
   parameter.profile = process.env.APP_PROFILE || parameter.profile || '';
 
   parameter.eureka=parameter.eureka || {};
