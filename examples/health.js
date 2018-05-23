@@ -14,8 +14,8 @@ var listener = app.listen(5680, () => {
       name    : 'HealthExampleService',     // We need a name for the service, so others can use it.
       express : app,                        // The express app is used to provide the discovery endpoints
       port    : listener.address().port,    // This is the public port for the registry, we just pass the express listener port
-      health  : function() {                // Provide a custom health function. status must be set.
-        return {
+      health  : function(req,res) {         // Provide a custom health function. status must be set. Request and response are provided by express.
+        res.status(200).send({
           status : 'UP',
           description : 'Custom health check example',
           sample1 : {
@@ -38,8 +38,7 @@ var listener = app.listen(5680, () => {
             description : 'Example for a starting sub service',
             value: 45
           }
-
-        }
+        });
       }
   })
 })
