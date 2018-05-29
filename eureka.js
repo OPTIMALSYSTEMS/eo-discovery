@@ -75,9 +75,15 @@ const exported = (eurekaClient, parameter) => {
     return config;
   }
 
+  const shutdown = ()=>{
+    log.debug("Shutdown. Unregistering from registry.");
+    eurekaClient.stop();
+  }
+
   return {
     getAppUrl : getAppUrl,
-    getConfig : getConfig
+    getConfig : getConfig,
+    shutdown : shutdown
   }
 }
 
