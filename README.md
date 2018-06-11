@@ -49,6 +49,18 @@ getConfig()
 ```
 The configuration returned depends on the profiles in use.
 
+To unregister from the eureka registry and stop sending heartbeats use.
+```
+shutdown()
+```
+
+Support for the log panel
+-------------------------
+If you want to expose your logging to the administration interface you must provide a path to the logfile. To do this, please set a 'logfile' property
+in the initialization parameter. The logfile property must be a absolute path or a relative path from the current directory. Note a relative path using '..' is not allowed.
+The content of this file will be presented in the log panel of the administration interface.
+
+
 Environment variables
 ---------------------
 The following environment variables are used during the runtime.
