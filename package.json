@@ -18,13 +18,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "publishConfig": {
-    "registry": "https://npm.enaio.org/"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git@git.optimal-systems.org:team-server/enaio-discovery.git"
-  },
   "author": "OPTIMAL SYSTEMS GmbH",
   "license": "MIT"
 }
