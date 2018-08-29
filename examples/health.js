@@ -1,7 +1,7 @@
 /**
  * This example provides no rest endpoints, but is providing a custom health check integration.
  */
-const eureka = require('../eureka.js');       // Change to require('enaio-discovery') if you copy this example
+const eureka = require('../eureka.js');       // Change to require('eo-discovery') if you copy this example
 const express = require('express')
 
 // Create a express app

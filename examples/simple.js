@@ -2,7 +2,7 @@
  * Simple minimal example that provides no rest endpoints. It just registers with the eureka discovery.
  * And deregisters after some time. It also shows the use of the init() promise.
  */
-const eureka = require('../eureka.js');       // Change to require('enaio-discovery') if you copy this example
+const eureka = require('../eureka.js');       // Change to require('eo-discovery') if you copy this example
 const express = require('express')
 
 // Create a express app

@@ -1,4 +1,4 @@
-enaio discovery
+eo discovery
 ===============
 Provides eureka integration together with [express.js](http://expressjs.com/). It enables service endpoints for health check, environment, logging and http call tracing as used by the eureka service and admin service.
 
@@ -8,13 +8,13 @@ You need at least node version 8. You can install it from [here](https://nodejs.
 In your project use
 
 ```
-npm install enaio-discovery
+npm install eo-discovery
 ```
-to add the enaio-discovery modules.
+to add the eo-discovery modules.
 
 ```javascript
 const express = require('express')
-const discovery = require('enaio-discovery')
+const discovery = require('eo-discovery')
 
 // Create a express app
 const app = express()
