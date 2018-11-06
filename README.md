@@ -29,7 +29,7 @@ var listener = app.listen(3000, () => {
   })
 })
 ```
-See example folder for more usage examples.
+See the [examples folder](https://github.com/OPTIMALSYSTEMS/eo-discovery/tree/master/examples) for more usage examples.
 
 Methods provided
 ----------------
@@ -56,13 +56,29 @@ shutdown()
 
 Support for the log panel
 -------------------------
+
 If you want to expose your logging to the administration interface you must provide a path to the logfile. To do this, please set a 'logfile' property
 in the initialization parameter. The logfile property must be a absolute path or a relative path from the current directory. Note a relative path using '..' is not allowed.
 The content of this file will be presented in the log panel of the administration interface.
 
+Providing a custom health check
+-------------------------------
+
+The default implementation for the health check always sends a 'UP' state. If you want to provide a custom health check, you can provide a health callback as init parameter.
+See [health check example](https://github.com/OPTIMALSYSTEMS/eo-discovery/blob/master/examples/health.js).
+
+
+Providing custom metrics
+-------------------------
+
+Basic system stats as available for the node runtime are provided as default metrics. These system metrics include the uptime and memory usage.
+If you want to provide counters and gauges for the metrics panel, you can set them by providing a metrics callback as init parameter.
+See [metrics example](https://github.com/OPTIMALSYSTEMS/eo-discovery/blob/master/examples/metrics.js).
+
 
 Environment variables
 ---------------------
+
 The following environment variables are used during the runtime.
 
 #### EUREKA_HOST
