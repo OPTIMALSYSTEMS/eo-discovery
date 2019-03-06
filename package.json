@@ -1,6 +1,6 @@
 {
   "name": "eo-discovery",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Enaio node.js eureka discovery integration",
   "main": "eureka.js",
   "keywords": [

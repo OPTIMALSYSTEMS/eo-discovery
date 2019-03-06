@@ -114,7 +114,8 @@ module.exports.init = async function(parameter) {
   var eureka = {
     host : process.env.EUREKA_HOST || parameter.eureka.host || 'localhost',
     port : process.env.EUREKA_PORT || parameter.eureka.port || 7261,
-    servicePath : process.env.EUREKA_SERVICEPATH || parameter.eureka.servicePath || '/eureka/apps'
+    servicePath : process.env.EUREKA_SERVICEPATH || parameter.eureka.servicePath || '/eureka/apps',
+    maxRetries : process.env.EUREKA_RETRY || parameter.eureka.retry || 20
   }
 
   log.info('App name                : ' + parameter.name);

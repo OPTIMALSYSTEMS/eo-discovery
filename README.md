@@ -91,6 +91,11 @@ Default: `7261`
 
 The eureka registry port.
 
+#### EUREKA_RETRY
+Default: `20`
+
+Number of retry attempts to reach the eureka registry. The wait time between each try, is increased by 500ms.
+
 #### EUREKA_SERVICEPATH
 Default: `/eureka/apps`
 
