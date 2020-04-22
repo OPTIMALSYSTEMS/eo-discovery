@@ -16,7 +16,7 @@ var listener = app.listen(5670, () => {
         name : 'SimpleExampleInfoService',// We need a name for the service, so others can use it.
         express : app,                    // The express app is used to provide the discovery endpoints
         port : listener.address().port,   // This is the public port for the registry, we just pass the express listener port
-        package : {                       // Here we provide information for the info. You can also use : require('package.json') are.
+        package : {                       // Here we provide information for the info. You can also use require('package.json') here.
           version : '4.42.42',
           description: 'This is only a sample service.',
           name : 'Info-Sample'

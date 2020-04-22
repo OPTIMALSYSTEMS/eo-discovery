@@ -102,7 +102,7 @@ See [metrics example](https://github.com/OPTIMALSYSTEMS/eo-discovery/blob/master
 Providing custom package information
 ------------------------------------
 By default the package.json that is located in the current working directory is used to provide information for the eureka info call. The used properties from the package.json are : name,version,description.
-These informations are included in the return if the /info method is called. You may override this behaviour by providing your own package object, that has these properties available. The name property is NOT used as service name. It is just used as informational 'package-name' in the info.
+These information is included in the return if the /info method is called. You may override this behaviour by providing your own package object, that has these properties available. The name property is NOT used as service name. It is just used as informational 'package-name' in the info.
 See [custom package information example](https://github.com/OPTIMALSYSTEMS/eo-discovery/blob/master/examples/info.js)
 
 Environment variables
