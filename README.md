@@ -61,6 +61,29 @@ If you want to expose your logging to the administration interface you must prov
 in the initialization parameter. The logfile property must be a absolute path or a relative path from the current directory. Note a relative path using '..' is not allowed.
 The content of this file will be presented in the log panel of the administration interface.
 
+Customize the logging
+---------------------
+The default logger is just using console output. If you want the library to use your own logger you can provide a implementation by providing a logger propery as initialization parameter. 
+This implementation must provide functions for logging in info,error,warning and debug level.
+
+For example:
+```javascript
+  discovery.init({
+      name : 'MyNodeService',           // We need a name for the service, so others can use it.
+      express : app,                    // The express app is used to provide the discovery endpoints
+      port : listener.address().port    // This is the public port for the registry, we just pass the express listener port
+      logger : {                        // Provide logger - mylogger may be any own logger or you forward the calls to a library like winston
+        {
+          debug : (m) => {mylogger.log('DEBUG', m)},
+          info  : (m) => {mylogger.log('INFO', m)},
+          warn  : (m) => {mylogger.log('WARN', m)},
+          error : (m) => {mylogger.log('ERROR', m)}
+        }
+      }
+  })
+
+```
+
 Providing a custom health check
 -------------------------------
 
