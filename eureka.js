@@ -23,6 +23,7 @@ const substitute = (input, args) => input.replace(/\${([a-z0-9.]+)}/gi, (_, v) =
 const exported = (eurekaClient, parameter) => {
 
   const getAppUrl = function(id) {
+    if( !eurekaClient ) throw new Error("getAppUrl is not possible. Registration was skipped.");
     var apps=eurekaClient.getInstancesByAppId(id);
     // Use routing service?
     // We use just a random robin here ...
@@ -36,33 +37,38 @@ const exported = (eurekaClient, parameter) => {
 
   const getConfig = async () => {
 
-    // Configuration endpoint is provided by the argus service
-    var url = getAppUrl('ARGUS') + '/config/' + parameter.name + '/'+ parameter.profile;
-
-    log.debug("Config url : "+url);
-
-    var result = await request(url);
-    const configRaw = JSON.parse( result );
     let config = {};
-    if( configRaw.propertySources ) {
-      configRaw.propertySources.forEach( (propertySource) => {
-        if( propertySource.source ) {
-          for (var name in propertySource.source) {
-            if (propertySource.source.hasOwnProperty(name)) {
-              config[name] = propertySource.source[name];
+
+    if( eurekaClient ) {
+      // Configuration endpoint is provided by the argus service
+      var url = getAppUrl('ARGUS') + '/config/' + parameter.name + '/'+ parameter.profile;
+
+      log.debug("Config url : "+url);
+
+      var result = await request(url);
+      const configRaw = JSON.parse( result );
+      if( configRaw.propertySources ) {
+        configRaw.propertySources.forEach( (propertySource) => {
+          if( propertySource.source ) {
+            for (var name in propertySource.source) {
+              if (propertySource.source.hasOwnProperty(name)) {
+                config[name] = propertySource.source[name];
+              }
             }
           }
-        }
-      });
-    }
-
-    for (var key in config) {
-      // skip loop if the property is from prototype
-      if (!config.hasOwnProperty(key)) continue;
-      if( typeof config[key] === "string" ) {
-        // If the config is a string we may have to do a substitute
-        config[key]=substitute(config[key],config);
+        });
       }
+
+      for (var key in config) {
+        // skip loop if the property is from prototype
+        if (!config.hasOwnProperty(key)) continue;
+        if( typeof config[key] === "string" ) {
+          // If the config is a string we may have to do a substitute
+          config[key]=substitute(config[key],config);
+        }
+      }
+    } else {
+      log.warn('Eureka config not available. Registration was skipped.');
     }
 
     log.debug("Config "+JSON.stringify(config,0,2));
@@ -76,8 +82,10 @@ const exported = (eurekaClient, parameter) => {
   }
 
   const shutdown = ()=>{
-    log.debug("Shutdown. Unregistering from registry.");
-    eurekaClient.stop();
+    if( eurekaClient ) {
+      log.debug("Shutdown. Unregistering from registry.");
+      eurekaClient.stop();
+    }
   }
 
   return {
@@ -125,42 +133,49 @@ module.exports.init = async function(parameter) {
   log.info('App public host address : ' + hostname);
   log.info('App public port         : ' + port);
 
-  log.info('Eureka hostname         : ' + eureka.host);
-  log.info('Eureka port             : ' + eureka.port);
-  log.info('Eureka servicepath      : ' + eureka.servicePath);
+  var skipRegistration = parameter.eureka.skip || process.env.EUREKA_SKIP_REGISTRATION;
 
-  var eurekaClient = new Eureka({
-    // application instance information
-    instance: {
-      app: parameter.name,
-      hostName: hostname,
-      ipAddr: ip.address('public'),   // Does this always work?
-      statusPageUrl: 'http://'+hostname+':'+port+'/manage/info',
-      healthCheckUrl: 'http://'+hostname+':'+port+'/manage/health',
-      instanceId : instanceId,
-      port: {
-        '$': port,
-        '@enabled': 'true',
+  if( !skipRegistration ) {
+
+    log.info('Eureka hostname         : ' + eureka.host);
+    log.info('Eureka port             : ' + eureka.port);
+    log.info('Eureka servicepath      : ' + eureka.servicePath);
+  
+    var eurekaClient = new Eureka({
+      // application instance information
+      instance: {
+        app: parameter.name,
+        hostName: hostname,
+        ipAddr: ip.address('public'),   // Does this always work?
+        statusPageUrl: 'http://'+hostname+':'+port+'/manage/info',
+        healthCheckUrl: 'http://'+hostname+':'+port+'/manage/health',
+        instanceId : instanceId,
+        port: {
+          '$': port,
+          '@enabled': 'true',
+        },
+        vipAddress: parameter.name,
+        dataCenterInfo: {
+          '@class': 'com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo',
+          name: 'MyOwn',  // This is needed by spring cloud / eureka / netflix whatever - if not set, a 400 is the response on registration
+        }
       },
-      vipAddress: parameter.name,
-      dataCenterInfo: {
-        '@class': 'com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo',
-        name: 'MyOwn',  // This is needed by spring cloud / eureka / netflix whatever - if not set, a 400 is the response on registration
-      }
-    },
-    // eureka server host / port and configuration
-    eureka : eureka,
-    // forward logger
-    logger : log
-  });
-
-  // Wait for the eureka client start done
-  await new Promise( (resolve,reject) => {
-      eurekaClient.start( ()=>{
-        log.info('Eureka client start done.');
-        resolve();
-      });
-  });
+      // eureka server host / port and configuration
+      eureka : eureka,
+      // forward logger
+      logger : log
+    });
+  
+    // Wait for the eureka client start done
+    await new Promise( (resolve,reject) => {
+        eurekaClient.start( ()=>{
+          log.info('Eureka client start done.');
+          resolve();
+        });
+    });
+  } else {
+    log.info('Eureka client is not created and not started. Registration is skipped controlled by configuration.');
+  }
 
   // Created discovery object.
   var discovery = exported(eurekaClient, parameter);

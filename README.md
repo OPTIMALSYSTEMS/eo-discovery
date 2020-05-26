@@ -154,3 +154,9 @@ This is the hostname that is used during registration with the eureka registry. 
 Default: Same as `APP_PORT`.
 
 This tells the eureka registery under which port the service is reachable. It may be needed to set this variable, if the service is running inside a docker container or behind a proxy service.
+
+### EUREKA_SKIP_REGISTRATION
+Default: Not set
+
+If this environment variable is set or if the configuration parameter 'eureka.skip' is given, the registration with the eureka service will not be done. In this mode, only the manage health, info and env calls are available. But it is not possible to get a service url from the registry and the service can not be found by other services. It is also not possible to get a central configuration. This may be useful, if the service can be found by other means and only the manage REST calls are used (e.g. in a kubernets environment). 
+The value may be any value, like 'yes' or 'true'. Only the existence of the environment variable or configuration parameter is evaluated.
