@@ -41,7 +41,7 @@ const exported = (eurekaClient, parameter) => {
 
     if( eurekaClient ) {
       // Configuration endpoint is provided by the argus service
-      var url = getAppUrl('ARGUS') + '/config/' + parameter.name + '/'+ parameter.profile;
+      var url = getAppUrl('ARGUS') + 'config/' + parameter.name + '/'+ parameter.profile;
 
       log.debug("Config url : "+url);
 

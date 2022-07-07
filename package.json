@@ -1,6 +1,6 @@
 {
   "name": "eo-discovery",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "Enaio node.js eureka discovery integration",
   "main": "eureka.js",
   "keywords": [
@@ -11,7 +11,7 @@
   ],
   "dependencies": {
     "eureka-js-client": "^4.5.0",
-    "express": "^4.17.1",
+    "express": "^4.18.1",
     "ip": "^1.1.5",
     "range-parser": "^1.2.1"
   },
