@@ -43,7 +43,7 @@ getAppUrl(ServiceName)
 to get a absolute url to the service with the given name. A error is thrown, if the service is not known in the registry.
 
 
-To get the central configuration for this serive, use this method on the discovery object.
+To get the central configuration for this service, use this method on the discovery object.
 ```
 getConfig()
 ```
@@ -73,12 +73,10 @@ For example:
       express : app,                    // The express app is used to provide the discovery endpoints
       port : listener.address().port    // This is the public port for the registry, we just pass the express listener port
       logger : {                        // Provide logger - mylogger may be any own logger or you forward the calls to a library like winston
-        {
           debug : (m) => {mylogger.log('DEBUG', m)},
           info  : (m) => {mylogger.log('INFO', m)},
           warn  : (m) => {mylogger.log('WARN', m)},
           error : (m) => {mylogger.log('ERROR', m)}
-        }
       }
   })
 
@@ -130,20 +128,10 @@ Default: `/eureka/apps`
 
 The eureka service path prefix. It should seldom be needed to change this.
 
-#### APP_PORT
-Default: `7461`
-
-The public port of the application.
-
 #### APP_PROFILE
 Default: ``
 
 The profiles of the application. This determines which configuration is in use.
-
-#### APP_NAME
-Default: ``
-
-The name (appId) of the application as registered with the eureka registry.
 
 #### PUBLIC_HOST
 Default: `os.hostname()`

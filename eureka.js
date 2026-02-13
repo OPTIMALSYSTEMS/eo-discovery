@@ -1,11 +1,22 @@
 /**
  * Wrapper around eureka-js-client that provides endpoints for the spring boot admin / eureka.
  */
-const Eureka = require('eureka-js-client').Eureka;
-const ip = require('ip');
+const EurekaClient = require('./lib/eureka-client');
 const request = require('./lib/request-promise');
 const expressIntegration = require('./lib/eureka-express');
 const os = require('os');
+
+const getPublicAddress = () => {
+  const interfaces = os.networkInterfaces();
+  for (const name of Object.keys(interfaces)) {
+    for (const iface of interfaces[name]) {
+      if (!iface.internal && iface.family === 'IPv4') {
+        return iface.address;
+      }
+    }
+  }
+  return '127.0.0.1';
+};
 
 // This is used as default logger
 var log = {
@@ -141,12 +152,12 @@ module.exports.init = async function(parameter) {
     log.info('Eureka port             : ' + eureka.port);
     log.info('Eureka servicepath      : ' + eureka.servicePath);
   
-    var eurekaClient = new Eureka({
+    var eurekaClient = new EurekaClient({
       // application instance information
       instance: {
         app: parameter.name,
         hostName: hostname,
-        ipAddr: ip.address('public'),   // Does this always work?
+        ipAddr: getPublicAddress(),
         statusPageUrl: 'http://'+hostname+':'+port+'/manage/info',
         healthCheckUrl: 'http://'+hostname+':'+port+'/manage/health',
         instanceId : instanceId,
@@ -168,7 +179,8 @@ module.exports.init = async function(parameter) {
   
     // Wait for the eureka client start done
     await new Promise( (resolve,reject) => {
-        eurekaClient.start( ()=>{
+        eurekaClient.start( (err)=>{
+          if( err ) { reject(err); return; }
           log.info('Eureka client start done.');
           resolve();
         });
